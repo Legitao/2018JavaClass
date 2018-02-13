@@ -38,6 +38,11 @@ public class Card {
 		suit = s;
 	}
 	
+	/**
+	 * This method get the corresponding suit of a character
+	 * @param r This is the character
+	 * @return
+	 */
 	private Suits toSuit(char c) {
 		switch(c){
 			case 'c': return Suits.club;   //why need Suits.club, rather than club

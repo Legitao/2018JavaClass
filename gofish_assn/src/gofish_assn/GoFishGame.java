@@ -13,7 +13,7 @@ public class GoFishGame
 		p2 = new Player(name2);
 		game_deck = new Deck();
 	}
-	
+
 	public void twoPeoplePlay()
 	{
 		game_deck.shuffle();
