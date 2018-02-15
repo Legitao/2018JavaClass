@@ -3,11 +3,14 @@ package gofish_assn;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Deck {
-	private ArrayList<Card> deck = new ArrayList<Card> ();
-	final int NUM_CARDS = 52;  //for this kind of deck
+public class Deck 
+{
+	private ArrayList<Card> deck = new ArrayList<Card> ();  //This is a container of the deck's cards
+	final int NUM_CARDS = 52;  //52 cards for this kind of deck
 	
-	//creates a new sorted deck
+	/**
+	 * This method is default constructor to construct a new sorted deck
+	 */
 	public Deck() {
 		for(int i = 0; i < NUM_CARDS; i++)
 		{
@@ -31,8 +34,10 @@ public class Deck {
 		
 	}
 	
+	/**
+	 * This method randomly shuffle the deck's cards
+	 */
 	public void shuffle() {
-		//System.out.println(deck.size());
 		Random rand_generator = new Random();
 		for(int i = 0; i < NUM_CARDS; i++)
 		{
@@ -43,22 +48,26 @@ public class Deck {
 		}
 	}
 	
-	
+	/**
+	 * This method prints all cards in the deck
+	 */
 	public void printDeck() {
 		String s = "";
 		for(int i = 0; i < deck.size(); i++)
 		{
 			s += deck.get(i).toString() + " ";
 		}
-		System.out.println(s);
-		
+		Main.output.println(s);	
 	}
 	
-	
+	/**
+	 * This method deals one card from the deck
+	 * @return If deck is empty, it returns null. If not, it returns the last card in arrayList
+	 */
 	public Card dealCard() {
 		if(deck.isEmpty())
 		{
-			System.out.println("no cardddddddddd");
+			Main.output.println("no cardddddddddd");
 			return null;
 		}
 		
@@ -67,5 +76,4 @@ public class Deck {
 		return c;		
 	}
 	
-
 }

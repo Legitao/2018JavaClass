@@ -1,17 +1,18 @@
 package gofish_assn;
 
-public class Card {
+public class Card 
+{
 	
 	public enum Suits {club, diamond, heart, spade};
 	
 	final static int TOP_RANK = 13; //King
 	final static int LOW_RANK = 1; //Ace
 	
-	private int rank;  //1 is an Ace
-	private Suits suit;
+	private int rank;  //This is the card's rank
+	private Suits suit;  //This is the card's suit
 
 	/**
-	 * This method is constructor
+	 * This method is default constructor to construct a 1-spade card. 
 	 */
 	public Card() {
 		rank = 1;
@@ -19,32 +20,36 @@ public class Card {
 	}
 	
 	/**
-	 * This method is constructor
+	 * This method is parameterized constructor
 	 * @param r This is the rank
 	 * @param s This is a char indicating suit
 	 */
-	public Card(int r, char s) {
+	public Card(int r, char s) 
+	{
 		rank = r;
 		suit = toSuit(s);
 	}
 	
 	/**
-	 * This method is constructor
+	 * This method is parameterized constructor
 	 * @param r This is the rank
 	 * @param s This is the suit
 	 */
-	public Card(int r, Suits s) {
+	public Card(int r, Suits s) 
+	{
 		rank = r;
 		suit = s;
 	}
 	
+
 	/**
-	 * This method get the corresponding suit of a character
-	 * @param r This is the character
-	 * @return
+	 * This method convert a char to its corresponding Suits
+	 * @param c This is the char of a suit's first character
+	 * @return If c is a desired character, it returns c's corresponding Suits. If not, it returns null.
 	 */
 	private Suits toSuit(char c) {
-		switch(c){
+		switch(c)
+		{
 			case 'c': return Suits.club;   //why need Suits.club, rather than club
 			case 'd': return Suits.diamond; 
 			case 'h': return Suits.heart;
@@ -53,17 +58,28 @@ public class Card {
 		}
 	}
 	
+	/**
+	 * This method convert a Suits to its first character
+	 * @param s This is one of four Suits
+	 * @return If s is a desired Suit, it returns s's first character. If not, it returns a space character.
+	 */
 	private String suitToString(Suits s)
 	{
-		switch(s){
+		switch(s)
+		{
 			case club: return "c"; 
 			case diamond: return "d"; 
 			case heart: return "h";
 			case spade: return "s";
 			default: return "";
-	}
+		}
 	}
 	
+	/**
+	 * This method convert a rank to its string representation
+	 * @param r This is the number representation of rank
+	 * @return If r is in range 1 to 13, it returns the string representation. If not, it returns an empty string.
+	 */
 	public static String rankToString(int r)
 	{
 		switch(r) {
@@ -84,15 +100,25 @@ public class Card {
 		}
 	}
 		
-	
+	/**
+	 * This is getter of rank
+	 * @return It returns the value of rank
+	 */
 	public int getRank() {
 		return rank;
 	}
 	
+	/**
+	 * This is getter of suit
+	 * @return It returns the value of suit
+	 */
 	public Suits getSuit() {
 		return suit;
 	}
 	
+	/**
+	 * This is an overriding of Object's toString method which returns the String representation of card.
+	 */
 	public String toString() {
 		String s = "";
 		
