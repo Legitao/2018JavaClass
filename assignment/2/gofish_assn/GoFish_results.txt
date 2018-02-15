@@ -1,0 +1,191 @@
+Jay: 7c Qs 10c 2d Kd Jh 7s 
+Chou: 5s 9c Ks As 8s 10s Ah 
+deck: Jc 2c 4h Kc Jd 3c 6d Kh 4d Qh 3h 5d 2h 5c 6c 9s 7d 6h Ad Ac 9h 9d 10h 10d Qd 7h 4s 3d 8c 2s 8d Js 5h Qc 6s 3s 8h 4c 
+
+Jay: Do you have 2
+Chou: Go fish
+Jay draws 4 from deck
+
+Chou: Do you have K
+Jay: Yes, I have a K
+Chou draws K from Jay
+
+Chou: Do you have 9
+Jay: Go fish
+Chou draws 8 from deck
+
+Jay: Do you have 4
+Chou: Go fish
+Jay draws 3 from deck
+
+Chou: Do you have 5
+Jay: Go fish
+Chou draws 6 from deck
+
+Jay: Do you have 4
+Chou: Go fish
+Jay draws Q from deck
+
+Chou: Do you have 6
+Jay: Go fish
+Chou draws 5 from deck
+
+Jay: Do you have 10
+Chou: Yes, I have a 10
+Jay draws 10 from Chou
+
+Jay: Do you have 3
+Chou: Go fish
+Jay draws J from deck
+
+Chou: Do you have 9
+Jay: Go fish
+Chou draws 8 from deck
+
+Jay: Do you have 4
+Chou: Go fish
+Jay draws 2 from deck
+
+Chou: Do you have 6
+Jay: Go fish
+Chou draws 8 from deck
+
+Jay: Do you have 4
+Chou: Go fish
+Jay draws 3 from deck
+
+Chou: Do you have 9
+Jay: Go fish
+Chou draws 4 from deck
+
+Jay: Do you have 4
+Chou: Yes, I have a 4
+Jay draws 4 from Chou
+
+Jay draws 7 from deck
+
+Chou: Do you have 9
+Jay: Go fish
+Chou draws Q from deck
+
+Jay: Do you have 7
+Chou: Go fish
+Jay draws 10 from deck
+
+Chou: Do you have 6
+Jay: Go fish
+Chou draws 10 from deck
+
+Jay: Do you have 7
+Chou: Go fish
+Jay draws 9 from deck
+
+Chou: Do you have 10
+Jay: Yes, I have a 10
+Chou draws 10 from Jay
+
+Chou: Do you have 6
+Jay: Go fish
+Chou draws 9 from deck
+
+Jay: Do you have 7
+Chou: Go fish
+Jay draws A from deck
+
+Chou: Do you have 6
+Jay: Go fish
+Chou draws A from deck
+
+Jay: Do you have 9
+Chou: Go fish
+Jay draws 6 from deck
+
+Chou: Do you have 6
+Jay: Yes, I have a 6
+Chou draws 6 from Jay
+
+Chou: Do you have A
+Jay: Yes, I have a A
+Chou draws A from Jay
+
+Chou: Do you have Q
+Jay: Go fish
+Chou draws 7 from deck
+
+Jay: Do you have 7
+Chou: Yes, I have a 7
+Jay draws 7 from Chou
+
+Jay: Do you have 9
+Chou: Go fish
+Jay draws 9 from deck
+
+Chou: Do you have Q
+Jay: Go fish
+Chou draws 6 from deck
+
+Jay draws 5 from deck
+
+Chou: Do you have 6
+Jay: Go fish
+Chou draws 2 from deck
+
+Jay: Do you have 5
+Chou: Go fish
+Jay draws 5 from deck
+
+Chou: Do you have Q
+Jay: Go fish
+Chou draws 3 from deck
+
+Jay draws Q from deck
+
+Chou: Do you have 3
+Jay: Go fish
+Chou draws 4 from deck
+
+Jay: Do you have Q
+Chou: Yes, I have a Q
+Jay draws Q from Chou
+
+Jay draws K from deck
+
+Chou: Do you have 2
+Jay: Go fish
+Chou draws 6 from deck
+
+Jay: Do you have K
+Chou: Go fish
+Jay draws 3 from deck
+
+Chou: Do you have 2
+Jay: Go fish
+Chou draws J from deck
+
+Jay: Do you have K
+Chou: Go fish
+Jay draws K from deck
+
+Chou: Do you have 3
+Jay: Yes, I have a 3
+Chou draws 3 from Jay
+
+Chou: Do you have 4
+Jay: Go fish
+Chou draws 4 from deck
+
+Jay draws 2 from deck
+
+Chou: Do you have 2
+Jay: Yes, I have a 2
+Chou draws 2 from Jay
+
+Chou: Do you have J
+Jay: Go fish
+Chou draws J from deck
+
+
+Chou wins with 14 booked pairs:
+As Ah Ks Ks 8s 8h 5s 5h 8d 8c 10h 10h 9c 9h 6s 6s Ad Ad 6c 6d 3h 3h 4d 4h 2h 2h Jd Jc 
+Jay has 12 booked pairs:
+7c 7s Qs Qc 10c 10c Jh Js 2d 2s 3s 3d 4c 4c 7h 7h 9d 9s 5c 5d Qh Qh Kh Kc 
