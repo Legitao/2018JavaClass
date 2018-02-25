@@ -155,18 +155,13 @@ public class SortTools {
 		for(int i = 1; i < n; i++)
 		{
 			int key = nums[i];
-			for(int j = i - 1; j >= 0; j--)
+			int j = i - 1;
+			while(j >= 0 && nums[j] > key)
 			{
-				if(nums[j] > key)
-				{
-					nums[j + 1] = nums[j];
-				}
-				else
-				{
-					nums[j + 1] = key;
-					break;
-				}
+				nums[j + 1] = nums[j];
+				j--;
 			}
+			nums[j + 1] = key;
 		}
 	}
 }
