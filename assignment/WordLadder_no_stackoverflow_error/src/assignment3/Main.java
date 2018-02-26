@@ -109,38 +109,18 @@ public class Main {
 		if(current.equals(end))
 		{
 			return true;
-		}
-
+		}		
 		
-		/*
 		ArrayList<String> adjacent_nodes = getAdjacentNodes(current, dict, visited);
 		for(String next: adjacent_nodes)
 		{
-			prev.replace(next, current);
-			DFS(next, end, dict, prev, visited);
-		}
-		*/
-		
-		
-		char[] modified_word = current.toCharArray();
-		for(int i = 0; i < modified_word.length; i++)
-		{
-			char letter = current.charAt(i);
-			for(int j = 0; j < 26; j++)
+			if(!visited.contains(next))  //don't forget this again. Returning from one sub-DFS, some originally unvisited nodes might have been visited
 			{
-				modified_word[i] = (char)('A' + j);
-				String next = String.valueOf(modified_word);
-				if(!next.equals(current) && dict.contains(next) && !visited.contains(next))
-				{
-					prev.replace(next, current);
-					if(DFS(next, end, dict, prev, visited))
-					{
-						return true;
-					}
-				}
+				prev.replace(next, current);
+				if(DFS(next, end, dict, prev, visited))
+					return true;
 				
 			}
-			modified_word[i] = letter;
 		}
 		return false;
 		
@@ -277,3 +257,4 @@ public class Main {
 		return words;
 	}
 }
+
