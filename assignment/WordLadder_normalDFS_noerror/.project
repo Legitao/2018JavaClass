@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>WordLadder_no_stackoverflow_error</name>
+	<name>WordLadder_normalDFS_noerror</name>
 	<comment></comment>
 	<projects>
 	</projects>

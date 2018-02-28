@@ -109,21 +109,28 @@ public class Main {
 		if(current.equals(end))
 		{
 			return true;
-		}		
-		
-		ArrayList<String> adjacent_nodes = getAdjacentNodes(current, dict, visited);
-		for(String next: adjacent_nodes)
+		}	
+			
+		char[] modified_word = current.toCharArray();
+		for(int i = 0; i < modified_word.length; i++)
 		{
-			if(!visited.contains(next))  //don't forget this again. Returning from one sub-DFS, some originally unvisited nodes might have been visited
+			char letter = current.charAt(i);
+			for(int j = 0; j < 26; j++)
 			{
-				prev.replace(next, current);
-				if(DFS(next, end, dict, prev, visited))
-					return true;
-				
+				modified_word[i] = (char)('A' + j);
+				String next = String.valueOf(modified_word);
+				if(!next.equals(current) && dict.contains(next) && !visited.contains(next))
+				{
+					prev.replace(next, current);
+					if(DFS(next, end, dict, prev, visited))
+					{
+						return true;
+					}
+				}				
 			}
+			modified_word[i] = letter;
 		}
-		return false;
-		
+		return false;		
 	}
 	
 	private static ArrayList<String> getAdjacentNodes(String current, Set<String> dict, Set<String> visited)
@@ -257,4 +264,3 @@ public class Main {
 		return words;
 	}
 }
-

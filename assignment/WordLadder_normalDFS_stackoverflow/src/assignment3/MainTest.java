@@ -11,19 +11,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 /**
  * This is the sample test cases for students
  * @author lisahua
  *
  */
-public class WordLadderTester {
+public class MainTest {
 	private static Set<String> dict;
 	private static ByteArrayOutputStream outContent;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before // this method is run before every test
+	public void setUp() {
 		Main.initialize();
 		dict = Main.makeDictionary();
 		outContent = new ByteArrayOutputStream();
@@ -51,12 +51,11 @@ public class WordLadderTester {
 
 		int diff = 0;
 		for (int i = 0; i < s1.length(); i++) {
-			if (s1.charAt(i) != s2.charAt(i) && diff++ > 1) {
-				return false;
+			if (s1.charAt(i) != s2.charAt(i)) {
+                diff++;
 			}
 		}
-
-		return true;
+        return diff==1;
 	}
 
 	/** Has Word Ladder **/
