@@ -15,10 +15,6 @@ import java.util.List;
 
 import org.hamcrest.core.IsInstanceOf;
 
-/* see the PDF for descriptions of the methods and fields in this class
- * you may add fields, methods or inner classes to Critter ONLY if you make your additions private
- * no new public, protected or default-package code or data can be added to Critter
- */
 
 
 public abstract class Critter {
@@ -50,6 +46,13 @@ public abstract class Critter {
 	private int x_coord;
 	private int y_coord;
 	private boolean moved = false;  //mark if a critter has moved once, to achieve second time moving prevention
+	
+	/**
+	 * This private method is a utility function used to determine if there is any critter occupying (x, y)
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 * @return If there is a critter occupying (x, y), return true.
+	 */
 	private boolean occupied(int x, int y) {
 		for(Critter c : population) {
 			if(c.energy > 0) {
@@ -61,6 +64,12 @@ public abstract class Critter {
 		return false;
 	}
 	
+	/**
+	 * This method gets a new point in the provided direction and length with respect to current point.
+	 * @param direction The direction of move
+	 * @param length The distance of move
+	 * @return A List whose first element is x coordinate and second element is y coordinate.
+	 */
 	private List<Integer> try_move(int direction, int length) {
 		List<Integer> destination = new java.util.ArrayList<Integer>();
 		int x_new = x_coord;
@@ -93,6 +102,11 @@ public abstract class Critter {
 		destination.add(y_new);
 		return destination;
 	}
+	
+	/**
+	 * This method implements the walking functionality of a critter.
+	 * @param direction The direction to walk
+	 */
 	protected final void walk(int direction) {
 		String caller_name = Thread.currentThread().getStackTrace()[2].getMethodName();
 		energy -= Params.walk_energy_cost;
@@ -107,6 +121,10 @@ public abstract class Critter {
 		}
 	}
 	
+	/**
+	 * This method implements the running functionality of a critter.
+	 * @param direction The direction to run
+	 */
 	protected final void run(int direction) {
 		energy -= Params.run_energy_cost;
 		String caller_name = Thread.currentThread().getStackTrace()[2].getMethodName();
@@ -121,6 +139,12 @@ public abstract class Critter {
 		}
 	}
 	
+
+	/**
+	 * This method implements the reproduction functionality of a critter.
+	 * @param offspring This is the new critter to be added
+	 * @param direction This is the direction of the new critter's initial position with regard to its parent
+	 */
 	protected final void reproduce(Critter offspring, int direction) {
 		if(this.energy < Params.min_reproduce_energy)
 		{
@@ -134,7 +158,7 @@ public abstract class Critter {
 		babies.add(offspring);  //quick note: This is an example where a subclass can indirectly access superclass's private data through protected/public methods
 		
 	}
-
+	
 	public abstract void doTimeStep();
 	public abstract boolean fight(String oponent);
 	
@@ -145,8 +169,8 @@ public abstract class Critter {
 	 * (Java weirdness: Exception throwing does not work properly if the parameter has lower-case instead of
 	 * upper. For example, if craig is supplied instead of Craig, an error is thrown instead of
 	 * an Exception.)
-	 * @param critter_class_name
-	 * @throws InvalidCritterException
+	 * @param critter_class_name This is the name of the new intance's class
+	 * @throws InvalidCritterException This is the exception during creation of an instance
 	 */
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
 		try {
@@ -173,8 +197,8 @@ public abstract class Critter {
 	/**
 	 * Gets a list of critters of a specific type.
 	 * @param critter_class_name What kind of Critter is to be listed.  Unqualified class name.
-	 * @return List of Critters.
-	 * @throws InvalidCritterException
+	 * @return List of Critters. This contains all instances with the class name provided
+	 * @throws InvalidCritterException This is the exception when the class name provided cannot be found
 	 */
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		List<Critter> result = new java.util.ArrayList<Critter>();
@@ -228,14 +252,17 @@ public abstract class Critter {
 		babies.clear();
 	}
 	
+	/**
+	 * This method does whole process in one time step: each critter invokes doTimeStep(), solve encounter,
+	 * deduct rest energy, remove dead critters and plant algae.
+	 */
 	public static void worldTimeStep() {
-		// Complete this method.
 		for(Critter c : population) {
 			c.moved = false;  //before each time step, set moved to false
 			c.doTimeStep();
 		}
 		//solve encounter
-		//I think this automatically resolves situations where >=3 critters are in one spot
+		//This loop automatically resolves situations where >=3 critters are in one spot
 		for(int i = 0; i < population.size(); i++) {
 			Critter tmp1 = population.get(i);
 			if(tmp1.energy > 0) {
@@ -257,7 +284,7 @@ public abstract class Critter {
 							}
 						}
 						else if(a == true && b == false) {
-							if(tmp2.energy > 0 && tmp2.x_coord == tmp1.x_coord && tmp2.y_coord == tmp1.y_coord) {
+							if(tmp1.energy > 0 && tmp2.energy > 0 && tmp2.x_coord == tmp1.x_coord && tmp2.y_coord == tmp1.y_coord) {
 								int a_number = getRandomInt(tmp1.energy);
 								int b_number = 0;
 								if(a_number >= b_number) {
@@ -271,7 +298,7 @@ public abstract class Critter {
 							}
 						}
 						else if(a == false && b == true) {
-							if(tmp1.energy > 0 && tmp1.x_coord == tmp2.x_coord && tmp1.y_coord == tmp2.y_coord) {
+							if(tmp1.energy > 0 && tmp2.energy > 0 && tmp1.x_coord == tmp2.x_coord && tmp1.y_coord == tmp2.y_coord) {
 								int a_number = 0;
 								int b_number = getRandomInt(tmp2.energy);
 								if(a_number >= b_number) {
@@ -285,7 +312,7 @@ public abstract class Critter {
 							}
 						}
 						else {
-							//depend on fight implementation. must ensure if tmp1 walks away, then tmp2 doesn't need to move
+							//both don't wanna fight, run away during calling fight()
 						}
 					}
 				}
@@ -322,6 +349,9 @@ public abstract class Critter {
 		babies.clear();
 	}
 	
+	/**
+	 * This is the viewer of the model. It prints the grid.
+	 */
 	public static void displayWorld() {
 		char grid[][] = new char[Params.world_height + 2][Params.world_width + 2];
 		for(int i = 0; i < Params.world_height + 2; i++) {

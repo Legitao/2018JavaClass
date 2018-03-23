@@ -1,13 +1,10 @@
 package assignment4;
-/* CRITTERS Main.java
+/* CRITTERS Critter.java
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Tao Zhu
+ * tz3694
+ * 15455
  * Slip days used: <0>
  * Fall 2016
  */
@@ -123,7 +120,11 @@ public class Main {
 	        			}
 	        			break;
 	        		case "stats":
-	        			if(command_arr.length > 2) {
+	        			if(command_arr.length > 2 || command_arr.length == 1) {
+	        				System.out.println("error processing: " + command);
+	        				break;
+	        			}
+	        			if(command_arr[1].equals("Critter")) {
 	        				System.out.println("error processing: " + command);
 	        				break;
 	        			}
