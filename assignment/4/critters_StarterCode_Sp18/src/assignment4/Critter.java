@@ -2,18 +2,18 @@ package assignment4;
 /* CRITTERS Critter.java
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Tao Zhu
+ * tz3694
+ * 15455
  * Slip days used: <0>
  * Fall 2016
  */
 
 
+import java.util.Iterator;
 import java.util.List;
+
+import org.hamcrest.core.IsInstanceOf;
 
 /* see the PDF for descriptions of the methods and fields in this class
  * you may add fields, methods or inner classes to Critter ONLY if you make your additions private
@@ -49,7 +49,7 @@ public abstract class Critter {
 	
 	private int x_coord;
 	private int y_coord;
-	private boolean moved = false;  //TODO: solve move twice problem
+	private boolean moved = false;  //mark if a critter has moved once, to achieve second time moving prevention
 	private boolean occupied(int x, int y) {
 		for(Critter c : population) {
 			if(c.energy > 0) {
@@ -60,13 +60,12 @@ public abstract class Critter {
 		}
 		return false;
 	}
-	protected final void walk(int direction) {
-		energy -= Params.walk_energy_cost;
-		if(moved == false) {
-			int x_new = x_coord;
-			int y_new = y_coord;
-			moved = true;
-			switch(direction) {
+	
+	private List<Integer> try_move(int direction, int length) {
+		List<Integer> destination = new java.util.ArrayList<Integer>();
+		int x_new = x_coord;
+		int y_new = y_coord;
+		switch(direction) {
 			//note: a % b is wrong. In Java, % is remainder, while in Python, its modulus.
 			case 0: x_new = Math.floorMod((x_coord + 1), Params.world_width);
 					break;
@@ -89,40 +88,36 @@ public abstract class Critter {
 					y_new = Math.floorMod((y_coord + 1), Params.world_height);
 					break;
 			default: break;
+		}
+		destination.add(x_new);
+		destination.add(y_new);
+		return destination;
+	}
+	protected final void walk(int direction) {
+		String caller_name = Thread.currentThread().getStackTrace()[2].getMethodName();
+		energy -= Params.walk_energy_cost;
+		if(moved == false) {
+			moved = true;
+			List<Integer> destination = try_move(direction, 1);
+			if(caller_name.equals("fight") && occupied(destination.get(0), destination.get(1))) {
+				return;  //In fight, if destination is occupied, critter cannot move
 			}
-			if(!occupied(x_new, y_new)) {
-				
-			}
+			x_coord = destination.get(0);
+			y_coord = destination.get(1);
 		}
 	}
 	
 	protected final void run(int direction) {
 		energy -= Params.run_energy_cost;
-		if(moved = false) {
+		String caller_name = Thread.currentThread().getStackTrace()[2].getMethodName();
+		if(moved == false) {
 			moved = true;
-			switch(direction) {
-				case 0: x_coord = Math.floorMod((x_coord + 2), Params.world_width); 
-						break;
-				case 1: x_coord = Math.floorMod((x_coord + 2), Params.world_width);  
-						y_coord = Math.floorMod((y_coord - 2), Params.world_height);
-						break;
-				case 2: y_coord = Math.floorMod((y_coord - 2), Params.world_height);  
-						break;	
-				case 3: x_coord = Math.floorMod((x_coord - 2), Params.world_width); 
-						y_coord = Math.floorMod((y_coord - 2), Params.world_height);
-						break;
-				case 4: x_coord = Math.floorMod((x_coord - 2), Params.world_width);
-						break;
-				case 5: x_coord = Math.floorMod((x_coord - 2), Params.world_width);
-					y_coord = Math.floorMod((y_coord + 2), Params.world_height);
-					break;
-				case 6: y_coord = Math.floorMod((y_coord + 2), Params.world_height);
-					break;
-				case 7: x_coord = Math.floorMod((x_coord + 2), Params.world_width);
-					y_coord = Math.floorMod((y_coord + 2), Params.world_height);
-					break;
-				default: break;
+			List<Integer> destination = try_move(direction, 2);
+			if(caller_name.equals("fight") && occupied(destination.get(0), destination.get(1))) {
+				return;  //In fight, if destination is occupied, critter cannot move
 			}
+			x_coord = destination.get(0);
+			y_coord = destination.get(1);
 		}
 	}
 	
@@ -133,29 +128,9 @@ public abstract class Critter {
 		}
 		offspring.energy = this.energy / 2;
 		this.energy = this.energy - this.energy / 2;
-		switch(direction) {
-		case 0: offspring.x_coord = Math.floorMod((this.x_coord + 1) , Params.world_width);  //why can access offspring's x_coord
-				break;															//https://stackoverflow.com/questions/30604431/why-can-an-instance-of-a-class-access-private-fields-of-another-instance-of-its
-		case 1: offspring.x_coord = Math.floorMod((this.x_coord + 1) , Params.world_width);  
-				offspring.y_coord = Math.floorMod((this.y_coord - 1) , Params.world_height);
-				break;
-		case 2: offspring.y_coord = Math.floorMod((this.y_coord - 1) , Params.world_height);
-				break;	
-		case 3: offspring.x_coord = Math.floorMod((this.x_coord - 1) , Params.world_width); 
-				offspring.y_coord = Math.floorMod((this.y_coord - 1) , Params.world_height);
-				break;
-		case 4: offspring.x_coord = Math.floorMod((this.x_coord - 1) , Params.world_width);
-				break;
-		case 5: offspring.x_coord = Math.floorMod((this.x_coord - 1) , Params.world_width);
-				offspring.y_coord = Math.floorMod((this.y_coord + 1) , Params.world_height);
-				break;
-		case 6: offspring.y_coord = Math.floorMod((this.y_coord + 1) , Params.world_height);
-				break;
-		case 7: offspring.x_coord = Math.floorMod((this.x_coord + 1) , Params.world_width);
-				offspring.y_coord = Math.floorMod((this.y_coord + 1) , Params.world_height);
-				break;
-		default: break;
-		}
+		List<Integer> destination = try_move(direction, 1);
+		offspring.x_coord = destination.get(0);
+		offspring.y_coord = destination.get(1);
 		babies.add(offspring);  //quick note: This is an example where a subclass can indirectly access superclass's private data through protected/public methods
 		
 	}
@@ -181,7 +156,7 @@ public abstract class Critter {
 			new_critter.energy = Params.start_energy;
 			new_critter.x_coord = getRandomInt(Params.world_width);
 			new_critter.y_coord = getRandomInt(Params.world_height);
-			//TODO: encounter will be solved in the next time step
+			//encounter will be solved in the next time step
 			population.add(new_critter);
 		}
 		catch (ClassNotFoundException e) {
@@ -204,7 +179,19 @@ public abstract class Critter {
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		List<Critter> result = new java.util.ArrayList<Critter>();
 		
-		return result;
+		try {
+			Class<?> clazz = Class.forName(myPackage + "." + critter_class_name);
+			
+			for(Critter c : population) {		
+				if(clazz.isAssignableFrom(c.getClass())) {
+					result.add(c);	
+				}	
+			}
+			return result;
+		}		
+		catch (ClassNotFoundException e1) {
+			throw new InvalidCritterException(critter_class_name);
+		}
 	}
 	
 	/**
@@ -237,7 +224,8 @@ public abstract class Critter {
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
-		// Complete this method.
+		population.clear();
+		babies.clear();
 	}
 	
 	public static void worldTimeStep() {
@@ -247,13 +235,13 @@ public abstract class Critter {
 			c.doTimeStep();
 		}
 		//solve encounter
-		//TODO: I think this automatically resolves situations where >=3 critters are in one spot
+		//I think this automatically resolves situations where >=3 critters are in one spot
 		for(int i = 0; i < population.size(); i++) {
 			Critter tmp1 = population.get(i);
 			if(tmp1.energy > 0) {
 				for(int j = i + 1; j < population.size(); j++) {
 					Critter tmp2 = population.get(j);
-					if(tmp2.energy > 0 && tmp2.x_coord == tmp1.x_coord && tmp2.y_coord == tmp1.y_coord) {
+					if(tmp1.energy > 0 && tmp2.energy > 0 && tmp2.x_coord == tmp1.x_coord && tmp2.y_coord == tmp1.y_coord) {  //tmp1.energy > 0 is essential, because there may be many critters in one spot
 						boolean a = tmp1.fight(tmp2.toString());
 						boolean b = tmp2.fight(tmp1.toString());
 						if(a == true && b == true) {
@@ -308,9 +296,16 @@ public abstract class Critter {
 			c.energy -= Params.rest_energy_cost;
 		}
 		//cull the dead critters
+		/*
 		for(Critter c : population) {
 			if(c.energy <= 0) {
 				population.remove(c);  //TODO: WORING!!!! to remove during iteration. I should search canonical usage.
+			}
+		}
+		*/
+		for(Iterator<Critter> i = population.iterator(); i.hasNext();) {
+			if(i.next().energy <= 0) {
+				i.remove();
 			}
 		}
 		//plant algae
@@ -329,6 +324,11 @@ public abstract class Critter {
 	
 	public static void displayWorld() {
 		char grid[][] = new char[Params.world_height + 2][Params.world_width + 2];
+		for(int i = 0; i < Params.world_height + 2; i++) {
+			for(int j = 0; j < Params.world_width + 2; j++) {
+				grid[i][j] = ' ';  //TODO: why if default initialize to null, empty world test will fail
+			}
+		}
 		grid[0][0] = grid[0][Params.world_width + 1] = grid[Params.world_height + 1][0] = grid[Params.world_height + 1][Params.world_height + 1] = '+';
 		for(int i = 1; i < Params.world_width + 1; i++) {
 			grid[0][i] = grid[Params.world_height + 1][i] = '-';

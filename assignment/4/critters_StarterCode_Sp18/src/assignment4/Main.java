@@ -14,7 +14,9 @@ package assignment4;
 
 import java.util.Scanner;
 import java.io.*;
-
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /*
  * Usage: java <pkgname>.Main <input file> test
@@ -70,52 +72,109 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
 
-        System.out.print("critters> ");
+        System.out.print("critters>");
         String command = kb.nextLine();
         while(!command.equals("quit")) {
-        	String [] command_arr = command.split("\\s+");  //TODO: regex, tab and space
-        	switch(command_arr[0]) {
-        		case "show":
-        			Critter.displayWorld();
-        			break;
-        		case "step":
-        			int count_step = 1;
-        			if(command_arr.length > 1) {
-        				count_step = Integer.parseInt(command_arr[1]);
-        			}
-    				while((count_step--) > 0) {
-    					Critter.worldTimeStep();
-    				}
-        			break;
-        		case "seed":
-        			long num = Integer.parseInt(command_arr[1]);
-        			Critter.setSeed(num);
-        			break;
-        		case "make":
-        			int count_make = 1;
-        			if(command_arr.length > 2) {
-        				count_make = Integer.parseInt(command_arr[2]);
-        			}
-        			while((count_make--) > 0) {
-        				try {
-							Critter.makeCritter(command_arr[1]);
-						} catch (InvalidCritterException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-        			}
-        			break;
-        		case "stats":
-        			//TODO
-        			break;
-        		default: break;
+        	try {
+	        	String [] command_arr = command.split("\\s+");  //TODO: regex, tab and space
+	        	switch(command_arr[0]) {
+	        		case "show":
+	        			if(command_arr.length > 1) {
+	        				System.out.println("error processing: " + command);
+	        				break;
+	        			}
+	        			Critter.displayWorld();
+	        			break;
+	        		case "step":
+	        			int count_step = 1;
+	        			if(command_arr.length > 2) {
+	        				count_step = Integer.parseInt(command_arr[1]);  //exception
+	        			}
+	        			if(command_arr.length == 2) {
+	        				count_step = Integer.parseInt(command_arr[1]);  //exception
+	        			}
+	    				while((count_step--) > 0) {
+	    					Critter.worldTimeStep();
+	    				}
+	        			break;
+	        		case "seed":
+	        			if(command_arr.length == 1 || command_arr.length > 2) {
+	        				System.out.println("error processing: " + command);
+	        				break;
+	        			}
+	        			long num = Integer.parseInt(command_arr[1]);
+	        			Critter.setSeed(num);
+	        			break;
+	        		case "make":
+	        			int count_make = 1;
+	        			if(command_arr.length > 3) {
+	        				System.out.println("error processing: " + command);
+	        				break;
+	        			}
+	        			if(command_arr.length == 3) {
+	        				count_make = Integer.parseInt(command_arr[2]);
+	        			}
+	        			while((count_make--) > 0) {
+	        				try {
+								Critter.makeCritter(command_arr[1]);
+							} catch (InvalidCritterException e) {
+								System.out.println("error processing: " + command);
+							}
+	        			}
+	        			break;
+	        		case "stats":
+	        			if(command_arr.length > 2) {
+	        				System.out.println("error processing: " + command);
+	        				break;
+	        			}
+						java.util.List<Critter> critter_list = Critter.getInstances(command_arr[1]);
+						
+						Class <?> clazz = Class.forName(myPackage + "." + command_arr[1]);
+						Critter tmp_critter = (Critter) clazz.newInstance();
+						Method mm = clazz.getMethod("runStats", List.class);  //TODO:worng: getMethod("runStats", List<Critter>.class)  getMethod("runStats", critter_list.getClass())
+						mm.invoke(tmp_critter, critter_list);
+						/*
+						Class <?> clazz = Class.forName(myPackage + "." + command_arr[1]); //How to avoid constructing an instance, 
+						Critter new_critter = (Critter) clazz.newInstance();				//rather, can we just get class and call the static method from class_name.method()
+						new_critter.runStats(critter_list);
+						*/
+						
+	        			break;
+	        		default: 
+	        			System.out.println("invalid command: " + command);
+	        			break;
+	        	}
         	}
-        	System.out.print("critters> ");
+			catch (NumberFormatException e){
+				System.out.println("error processing: " + command);
+			} catch (InvalidCritterException e) {
+				System.out.println("error processing: " + command);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	System.out.print("critters>");
         	command = kb.nextLine();
         }
-        // System.out.println("GLHF");
-        
-        /* Write your code above */
+
         System.out.flush();
 
     }
