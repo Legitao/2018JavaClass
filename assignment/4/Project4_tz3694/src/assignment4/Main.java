@@ -116,10 +116,7 @@ public class Main {
 								Critter.makeCritter(command_arr[1]);
 							} catch (InvalidCritterException e) {
 								System.out.println("error processing: " + command);
-							} catch (NoClassDefFoundError e) {
-								System.out.println("error processing: " + command);
 							}
-	        		
 	        			}
 	        			break;
 	        		case "stats":
