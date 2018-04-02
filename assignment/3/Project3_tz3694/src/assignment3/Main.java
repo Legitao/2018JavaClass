@@ -273,7 +273,7 @@ public class Main {
     
 	/**
 	 * This method prints ladder
-	 * @param ladder
+	 * @param ladder This is a ArrayList of ladder
 	 */
 	public static void printLadder(ArrayList<String> ladder) {
 		
