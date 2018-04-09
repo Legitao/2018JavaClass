@@ -1,21 +1,47 @@
-package assignment4;
-/* CRITTERS Critter.java
- * EE422C Project 4 submission by
- * Replace <...> with your actual data.
- * Tao Zhu
- * tz3694
- * 15455
- * Slip days used: <0>
- * Fall 2016
- */
+package assignment5;
 
-
-import java.util.Iterator;
 import java.util.List;
-
-
+import java.util.Iterator;
+import javafx.scene.shape.Shape;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Polygon;
+import javafx.geometry.Pos;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 
 public abstract class Critter {
+	/* NEW FOR PROJECT 5 */
+	public enum CritterShape {
+		CIRCLE,
+		SQUARE,
+		TRIANGLE,
+		DIAMOND,
+		STAR
+	}
+	
+	/* the default color is white, which I hope makes critters invisible by default
+	 * If you change the background color of your View component, then update the default
+	 * color to be the same as you background 
+	 * 
+	 * critters must override at least one of the following three methods, it is not 
+	 * proper for critters to remain invisible in the view
+	 * 
+	 * If a critter only overrides the outline color, then it will look like a non-filled 
+	 * shape, at least, that's the intent. You can edit these default methods however you 
+	 * need to, but please preserve that intent as you implement them. 
+	 */
+	public javafx.scene.paint.Color viewColor() { 
+		return javafx.scene.paint.Color.WHITE; 
+	}
+	
+	public javafx.scene.paint.Color viewOutlineColor() { return viewColor(); }
+	public javafx.scene.paint.Color viewFillColor() { return viewColor(); }
+	
+	public abstract CritterShape viewShape(); 
+	
 	private static String myPackage;
 	private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
@@ -24,6 +50,15 @@ public abstract class Critter {
 	static {
 		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
+	
+	protected final String look(int direction, boolean steps) {  //TODO: look old state or current state
+		energy -= Params.look_energy_cost;
+		int distance = steps == true ? 2 : 1;
+		List<Integer> destination = try_move(direction, distance);
+		return occupied(destination.get(0), destination.get(1));
+	}
+	
+	/* rest is unchanged from Project 4 */
 	
 	private static java.util.Random rand = new java.util.Random();
 	public static int getRandomInt(int max) {
@@ -51,15 +86,15 @@ public abstract class Critter {
 	 * @param y The y coordinate
 	 * @return If there is a critter occupying (x, y), return true.
 	 */
-	private boolean occupied(int x, int y) {
+	private String occupied(int x, int y) {
 		for(Critter c : population) {
 			if(c.energy > 0) {
 				if(c.x_coord == x && c.y_coord == y) {
-					return true;
+					return c.toString();
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	/**
@@ -111,7 +146,7 @@ public abstract class Critter {
 		if(moved == false) {
 			moved = true;
 			List<Integer> destination = try_move(direction, 1);
-			if(caller_name.equals("fight") && occupied(destination.get(0), destination.get(1))) {
+			if(caller_name.equals("fight") && occupied(destination.get(0), destination.get(1)) != null) {
 				return;  //In fight, if destination is occupied, critter cannot move
 			}
 			x_coord = destination.get(0);
@@ -129,7 +164,7 @@ public abstract class Critter {
 		if(moved == false) {
 			moved = true;
 			List<Integer> destination = try_move(direction, 2);
-			if(caller_name.equals("fight") && occupied(destination.get(0), destination.get(1))) {
+			if(caller_name.equals("fight") && occupied(destination.get(0), destination.get(1)) != null) {
 				return;  //In fight, if destination is occupied, critter cannot move
 			}
 			x_coord = destination.get(0);
@@ -220,8 +255,9 @@ public abstract class Critter {
 	 * Prints out how many Critters of each type there are on the board.
 	 * @param critters List of Critters.
 	 */
-	public static void runStats(List<Critter> critters) {
-		System.out.print("" + critters.size() + " critters as follows -- ");
+	public static String runStats(List<Critter> critters) {
+		String result;
+		result = ("" + critters.size() + " critters as follows -- ");
 		java.util.Map<String, Integer> critter_count = new java.util.HashMap<String, Integer>();
 		for (Critter crit : critters) {
 			String crit_string = crit.toString();
@@ -234,10 +270,11 @@ public abstract class Critter {
 		}
 		String prefix = "";
 		for (String s : critter_count.keySet()) {
-			System.out.print(prefix + s + ":" + critter_count.get(s));
+			result += (prefix + s + ":" + critter_count.get(s));
 			prefix = ", ";
 		}
-		System.out.println();		
+		result += "\n";
+		return result;
 	}	
 
 
@@ -320,17 +357,9 @@ public abstract class Critter {
 		for(Critter c : population) {
 			c.energy -= Params.rest_energy_cost;
 		}
-		//cull the dead critters
-		/*
-		for(Critter c : population) {
-			if(c.energy <= 0) {
-				population.remove(c);  //WORING!!!! ConcurrentModifyException.
-			}
-		}
-		*/
 		for(Iterator<Critter> i = population.iterator(); i.hasNext();) {
 			if(i.next().energy <= 0) {
-				i.remove();  //Use iterator.remove() rather than list.remove() to avoid ConcurrentModifyException
+				i.remove();
 			}
 		}
 		//plant algae
@@ -350,35 +379,73 @@ public abstract class Critter {
 	/**
 	 * This is the viewer of the model. It prints the grid.
 	 */
-	public static void displayWorld() {
-		char grid[][] = new char[Params.world_height + 2][Params.world_width + 2];
-		for(int i = 0; i < Params.world_height + 2; i++) {
-			for(int j = 0; j < Params.world_width + 2; j++) {
-				grid[i][j] = ' ';  //TODO: why if default initialize to null, empty world test will fail
+	public static void displayWorld(GridPane gpane) {
+		double w = gpane.getPrefWidth() / Params.world_width;
+		double h = gpane.getPrefHeight() / Params.world_height;
+		double unit_length = w < h ? w : h;
+		gpane.getChildren().clear();
+		for(int i = 0; i < Params.world_width; i++) {
+			for(int j = 0; j < Params.world_height; j++) {
+				StackPane spane = new StackPane();
+				spane.setStyle("-fx-border-color: black");
+				spane.setAlignment(Pos.CENTER);
+				spane.setMinSize((int)(w) , (int)(h));
+				gpane.add(spane, i, j);
 			}
 		}
-		grid[0][0] = grid[0][Params.world_width + 1] = grid[Params.world_height + 1][0] = grid[Params.world_height + 1][Params.world_height + 1] = '+';
-		for(int i = 1; i < Params.world_width + 1; i++) {
-			grid[0][i] = grid[Params.world_height + 1][i] = '-';
-		}
-		for(int i = 1; i < Params.world_height + 1; i++) {
-			grid[i][0] = grid[i][Params.world_width + 1] = '|';
-		}
-		
 		for(Critter c : population) {
-			if(c.energy > 0) {
-				grid[c.y_coord + 1][c.x_coord + 1] = c.toString().charAt(0);
+			if(c.energy > 0) { //TODO: in case there are dead critters not culled. At end, I should delete this line and it still works
+				StackPane spane = (StackPane) gpane.getChildren().get(c.x_coord + c.y_coord * Params.world_width);
+				spane.setAlignment(Pos.CENTER);
+				switch (c.viewShape()) {
+					case CIRCLE: 
+						Circle cir = new Circle(0, 0, unit_length / 3);
+						cir.setFill(c.viewFillColor());
+						cir.setStroke(c.viewOutlineColor());						
+						spane.getChildren().add(cir);
+						break;
+					case SQUARE:
+						Rectangle rec = new Rectangle(0, 0, unit_length / 1.5 , unit_length / 1.5);
+						rec.setFill(c.viewFillColor());
+						rec.setStroke(c.viewOutlineColor());
+						//gpane.add(rec, c.x_coord, c.y_coord);
+						spane.getChildren().add(rec);
+						break;
+					case DIAMOND:
+						Polygon diam = new Polygon();
+						diam.getPoints().addAll(w / 2, h / 10, w / 10 , h / 2, w / 2, 9 * h / 10, 9 * w / 10, h / 2);
+						diam.setFill(c.viewFillColor());
+						diam.setStroke(c.viewOutlineColor());						
+						spane.getChildren().add(diam);
+						break;
+					case STAR:
+						Polygon star = new Polygon();
+						double x = w / 2;
+						double y = h / 2;
+						double radius = unit_length / 3;
+						double alpha = 2 * Math.PI / 10;
+						for(int i = 0; i < 11; i++) {
+							int r = (i % 2 == 1 ? 1 : 2);
+							star.getPoints().add(x + radius / r * Math.cos(alpha * i + Math.PI / 2));
+							star.getPoints().add(y + radius / r * Math.sin(alpha * i + Math.PI / 2));
+						}
+						star.setFill(c.viewFillColor());
+						star.setStroke(c.viewOutlineColor());						
+						spane.getChildren().add(star);
+						break;
+					case TRIANGLE:
+						Polygon tri = new Polygon();
+						tri.getPoints().addAll(w / 2, h / 10, w / 10, 9 * h / 10, 9 * w / 10, 9 * h / 10);
+						tri.setFill(c.viewFillColor());
+						tri.setStroke(c.viewOutlineColor());						
+						spane.getChildren().add(tri);
+						break;
+					default:
+				}
+				
 			}
-		}
-		
-		for(int i = 0; i < Params.world_height + 2; i++) {
-			for(int j = 0; j < Params.world_width + 2; j++) {
-				System.out.print(grid[i][j]);
-			}
-			System.out.print('\n');
 		}
 	}
-	
 	
 	
 	/* the TestCritter class allows some critters to "cheat". If you want to 

@@ -132,16 +132,34 @@ public class Main {
 	        				break;
 	        			}
 						java.util.List<Critter> critter_list = Critter.getInstances(command_arr[1]);
+						Class<?> clazz = Class.forName(myPackage + "." + command_arr[1]);						
+						Method mm = clazz.getMethod("runStats", List.class);
+						mm.invoke(null, critter_list); //For static method, you don't need to provide an instance, just pass a null is OK
 						
-						Class <?> clazz = Class.forName(myPackage + "." + command_arr[1]);
-						Critter tmp_critter = (Critter) clazz.newInstance();
-						Method mm = clazz.getMethod("runStats", List.class);  //TODO:worng: getMethod("runStats", List<Critter>.class)  getMethod("runStats", critter_list.getClass())
-						mm.invoke(tmp_critter, critter_list);
 						/*
-						Class <?> clazz = Class.forName(myPackage + "." + command_arr[1]); //How to avoid constructing an instance, 
-						Critter new_critter = (Critter) clazz.newInstance();				//rather, can we just get class and call the static method from class_name.method()
-						new_critter.runStats(critter_list);
+						 * Wrong: getMethod("runStats", List<Critter>.class)
+						 * Because of type erasure of generic type, there is no class literal of a parameterized Class
+						 * https://stackoverflow.com/questions/2390662/java-how-do-i-get-a-class-literal-from-a-generic-type
 						*/
+						
+
+						
+						/*
+						 * Wrong: Method mm = clazz.getMethod("runStats", critter_list.getClass());
+						 * critter_list is an instance of ArrayList, while the parameter of runStats is List
+						 * 
+						 * critters>java.lang.NoSuchMethodException: assignment4.Craig.runStats(java.util.ArrayList)
+						 * at java.lang.Class.getMethod(Unknown Source)
+						 * at assignment4.Main.main(Main.java:138)
+						*/
+						
+						/*
+						 * Wrong: Class <?> clazz = Class.forName(myPackage + "." + command_arr[1]); 
+						 * Critter new_critter = (Critter)clazz.newInstance();
+						 * new_critter.runStats(critter_list);  //This will always call runStats in Critter.java
+															//Because runStats is static method, it's not related to any instance, so it's not polymorphic.
+															//Running which version of runStats is determined by Class, rather than instance
+						 */
 						
 	        			break;
 	        		default: 
@@ -154,25 +172,22 @@ public class Main {
 			} catch (InvalidCritterException e) {
 				System.out.println("error processing: " + command);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
         	System.out.print("critters>");
